@@ -39,7 +39,10 @@ const Registrar = () => {
         error: false
       })
     } catch (error) {
-      console.log(error);
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true 
+      })
     }
 
   }
