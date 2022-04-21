@@ -1,6 +1,43 @@
-import { Link } from "react-router-dom"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import Alerta from "../components/Alerta"
+import useAuth from "../hooks/useAuth"
+import clienteAxios from "../config/axios"
+
 
 const Login = () => {
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [alerta, setAlerta] = useState({})
+
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if ([email, password].includes('')) {
+            setAlerta({
+                msg: "Todos los campos son obligatorios",
+                error: true
+            });
+            return
+        }
+
+        try {
+            const { data } = await clienteAxios.post('/veterinarios/login', { email, password })
+            localStorage.setItem('token', data.token)
+
+            navigate('/admin')
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
+    }
+
+    const { msg } = alerta
     return (
         <>
     <div>
@@ -8,17 +45,24 @@ const Login = () => {
                     <span className="text-black">Pacientes</span></h1>
     </div>
             
-         <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-         <form>
+            <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
+                
+             {msg && <Alerta
+                    alerta={alerta}
+                />}
+
+         <form onSubmit={handleSubmit}>
              <div className="my-5">
                 <label
                 className="uppercase text-gray-700 block text-xl font-bold"
                 > Correo
                 </label>
                     <input 
-                        type = "email"
-                        placeholder="Correo de Registro"
-                        className="border w-full p-3 mt-3 bg-gray-100 rounded-xl"
+                            type = "email"
+                            placeholder="Correo de Registro"
+                            className="border w-full p-3 mt-3 bg-gray-100 rounded-xl"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                     />
                     </div>
              <div className="my-5">
@@ -27,9 +71,11 @@ const Login = () => {
                 > Contraseña
                 </label>
                     <input 
-                        type = "password"
-                        placeholder="Digite su contraseña"
-                        className="border w-full p-3 mt-3 bg-gray-100 rounded-xl"
+                            type = "password"
+                            placeholder="Digite su contraseña"
+                            className="border w-full p-3 mt-3 bg-gray-100 rounded-xl"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                     />
                     </div>       
                     

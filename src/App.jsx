@@ -6,10 +6,15 @@ import OlvidePassword from "./paginas/OlvidePassword"
 import ConfirmarCuenta from "./paginas/ConfirmarCuenta"
 import NuevoPassword from "./paginas/NuevoPassword"
 
+import { AuthProvider } from "./context/AuthProvider"
+
 function App() {
   
   return (
     <BrowserRouter>
+      <AuthProvider>
+
+     
       <Routes>
         <Route path="/" element={<AuthLayout />}>
           <Route index element={<Login />} />
@@ -18,9 +23,10 @@ function App() {
           <Route path="olvide-password/:token" element={<NuevoPassword />} />
           <Route path="confirmar-cuenta/:id" element={<ConfirmarCuenta />} />
         </Route>
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
-  );
-};
+  )
+}
 
-export default App;
+export default App
